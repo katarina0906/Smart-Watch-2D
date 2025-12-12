@@ -33,39 +33,41 @@ void BatteryScreen_Update(double dt)
 
 void BatteryScreen_Render(unsigned int shader, unsigned int quadVAO)
 {
-    float cx = 0.0f;
-    float cy = 0.00f;
+    float cx = 0.25f;
+    float cy = 0.0f;
 
-    float scaleArrow = 0.0032f;
-    Renderer_DrawText("<", cx - 0.63f, cy, scaleArrow, 1, 1, 1);
+    Renderer_DrawText("<", cx - 0.88f, cy, 0.0032f, 1, 1, 1);
 
     char txt[16];
     sprintf(txt, "%.0f%%", batteryPercent);
-    Renderer_DrawText(txt, cx - 0.05f, cy + 0.20f, 0.0048f, 1, 1, 1);
+    Renderer_DrawText(txt, cx - 0.43f , cy + 0.20f, 0.0048f, 1, 1, 1);
 
     float outerW = 0.45f;
     float outerH = 0.18f;
 
     drawQuadRect(shader, quadVAO,
-        cx, cy,
-        outerW, outerH,
+        cx - outerW / 2.0f,
+        cy - outerH / 2.0f,
+        outerW,
+        outerH,
         1, 1, 1, 1);
 
-    float fillRatio = batteryPercent / 100.0f;
-    float fillW = outerW * fillRatio;
-    float fillH = outerH * 0.80f;
+    float padding = outerW * 0.04f;
 
-    float rightX = cx + (outerW / 2.0f);
-    float leftX = rightX - fillW;
-    float fillCenterX = (leftX + rightX) * 0.5f;
+    float fillMaxW = outerW - 2.0f * padding;
+    float fillH = outerH * 0.80f;
+    float fillW = fillMaxW * (batteryPercent / 100.0f);
+
+    float rightEdgeX = cx + outerW / 2.0f - padding;
+    float fillX = rightEdgeX - fillW;
 
     float r = 0, g = 1, b = 0;
     if (batteryPercent <= 10) { r = 1; g = 0; b = 0; }
     else if (batteryPercent <= 20) { r = 1; g = 1; b = 0; }
 
     drawQuadRect(shader, quadVAO,
-        fillCenterX,
-        cy,
+        fillX,
+        cy - fillH / 2.0f,
         fillW,
         fillH,
         r, g, b, 1);
